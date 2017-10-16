@@ -7,10 +7,14 @@ hsv = None
 mhi = None
 
 class Person:
-    __slots__ = ['rect', 'dir']
+    __slots__ = ['rect', 'dir', 'dirHist']
     def __init__(self, rect, dir):
         self.rect = rect
         self.dir = dir
+        self.dirHist = []
+    def __repr__(self):
+        from pprint import pformat
+        return pformat([self.rect, self.dir], indent=4, width=1)
 person = Person(None, None)
 
 # initialize the HOG descriptor/person detector
@@ -81,6 +85,7 @@ def parse_frame(frame):
         roi = flow[y:y+h,x:x+w]
         mean = numpy.mean(roi, axis=(0, 1))
         person.dir = tuple(mean)
+        person.dirHist.append(mean)
 
     pedframe = frame.deionized.copy()
     if person.rect is not None:
@@ -95,3 +100,7 @@ def parse_frame(frame):
         cv2.imshow('Detection A', cv2.hconcat(imsToShow))
 
     prev_frame = frame_bw
+
+    DetectionAResults = namedtuple('DetectionAResults', 'person')
+    return DetectionAResults(person)
+
