@@ -1,0 +1,39 @@
+backwards_1: velocity moves up
+
+backwards_2: movement upwards but position doesn't really change
+
+forward_1: obvious movement downwards
+
+front_1: obvious motion to the left
+
+front_2: even more obvious motion down and to the left
+
+obs_1: sudden movement to theright, sudden shrinkage in size 
+
+obs_2: sudden movement to the right, slightly upwards, sudden shrinkage in size
+
+obs_3: large rect movement, movement down and to the left
+
+obs_4: no detection until mid-fall, movement down to the left, sudden shrinkage in size
+
+obs_5: barely any movement detected, shrinkage in size 
+
+obs_6: No detection 
+
+obs_7: stayed on detecting andrew instead of mat, but switched to mat pretty quickly when he started falling (when HOG failed)
+
+obs_8: tracked mat 'fall', sudden movement down and then up 
+
+shoes_1: not much movement, only slight change in rect size, moved off frame
+
+shoes_2: movement curves downwards, larger shrinking of size, moved off frame, sudden enlargement in detection size
+
+shoes_3: not much movement, detects part of mat as person
+
+shoes_4: sudden movement down and to the right
+
+side_1: movement down to the right
+
+side_2: large right movement, size shrinks and grows pretty quickly
+
+shoes_3: 
