@@ -7,12 +7,21 @@ import sys
 import os
 
 def main():
-    if len(sys.argv) <= 0:
-        print('Please provide a folder video to load')
-        sys.exit(1)
+    if len(sys.argv) <= 1:
+        print('No folder with video provided, playing ALL')
+        videos_dir = os.path.dirname(os.path.realpath(__file__)) + '/videos/'
+        for dir in os.listdir(videos_dir):
+            if not os.path.isdir(videos_dir + dir):
+                continue
+            play(dir)
+    else:
+        for i in range(1, len(sys.argv)):
+            play(sys.argv[i])
 
-    print('Loading video')
-    video = load(sys.argv[1])
+
+def play(folder):
+    print('Loading ' + folder)
+    video = load(folder)
 
     if video is None:
         print('Failed to load video')
