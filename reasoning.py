@@ -23,7 +23,9 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b):
         deltaLengths = np.zeros(shape = (xAxisLength-1), dtype = float)
         deltaAreas = np.zeros(shape = (xAxisLength-1), dtype = float)
         deltaRatios = np.zeros(shape = (xAxisLength-1), dtype = float)
-
+    if (xAxisLength > 3):
+        averageAreas = np.zeros(shape = (xAxisLength-4), dtype = float)
+        averageRatios = np.zeros(shape = (xAxisLength-4), dtype = float)
 
 
     for i in range (0, xAxisLength):
@@ -47,15 +49,17 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b):
             deltaLengths[i-1] = lengths[i] - lengths[i-1]
             deltaRatios[i-1] = ratios[i] - ratios[i-1]
             deltaAreas[i-1] = areas[i] - areas[i-1]
+        if (i > 3):
+            averageRatios[i-4] = (ratios[i] + ratios[i-1] + ratios[i-2] + ratios[i-3] + ratios[i-4])/5
+            averageAreas[i-4] = (areas[i] + areas[i-1] + areas[i-2] + areas[i-3] + areas[i-4])/5
 
     # Create data
     yAxis = range(1,xAxisLength+1)
     deltaYAxis = range(1,xAxisLength)
+    aveYAxis = range(1,xAxisLength-3)
     # angleData = pd.DataFrame({'frames': yAxis, 'angles': angles })
     lengthData = pd.DataFrame({'frames': yAxis, 'vector magnitude': lengths })
-
     ratioData=pd.DataFrame({'frames': yAxis, 'ratios of sides': ratios })
-
     areaData=pd.DataFrame({'frames': yAxis, 'areas': areas })
 
     if (xAxisLength > 0):
@@ -67,6 +71,12 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b):
         ratioChangeData = None
         areaChangeData = None
 
+    if (xAxisLength > 4):
+        areaAverageData = pd.DataFrame({'frames': aveYAxis, 'average areas': averageAreas })
+        ratioAverageData = pd.DataFrame({'frames': aveYAxis, 'average ratios': averageRatios })
+    else:
+        areaAverageData = None
+        ratioAverageData = None
     # if (xAxisLength > 1):
     #     print (xAxisLength)
     #     input("Press Enter to continue...")
@@ -76,15 +86,16 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b):
 
 
 
-    return originalFrame[0], lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData
+    return originalFrame[0], lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData, areaAverageData, ratioAverageData
     #return originalFrame[0], angleData, lengthData, ratioData, areaData
 
-def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData, startfall, endfall):
+def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData, areaAverageData, ratioAverageData, startfall, endfall, videoName):
     # angleGraph = plt.plot( 'frames', 'angles', data=angleData, marker='o', color='mediumvioletred')
     # angleGraph.append(plt.plot([startfall, startfall], [-1.5, 1.5], color='k', linestyle='-', linewidth=2))
     # angleGraph.append(plt.plot([endfall, endfall], [-1.5, 1.5], color='k', linestyle='-', linewidth=2))
     # plt.show()
 
+    print("Vector Magnitude Graph for video: " + videoName)
     vectorGraph = plt.plot( 'frames', 'vector magnitude', data=lengthData, marker='o', color='red')
     vectorGraph.append(plt.plot([startfall, startfall], [5, 0], color='k', linestyle='-', linewidth=2))
     vectorGraph.append(plt.plot([endfall, endfall], [5, 0], color='k', linestyle='-', linewidth=2))
@@ -93,11 +104,13 @@ def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratio
     # vectorGraph.set_ylabel("Magnitude")
     plt.show()
 
+    print("Change in magnitude Graph for video: " + videoName)
     plt.plot( 'frames', 'delta magnitude', data=lengthChangeData, marker='o', color='mediumvioletred')
     plt.plot([startfall, startfall], [2, 0], color='k', linestyle='-', linewidth=2)
     plt.plot([endfall, endfall], [2, 0], color='k', linestyle='-', linewidth=2)
     plt.show()
 
+    print("Ratio of sides Graph for video: " + videoName)
     ratioGraph = plt.plot( 'frames', 'ratios of sides', data=ratioData, marker='o', color='cyan')
     ratioGraph.append(plt.plot([startfall, startfall], [2, 0], color='k', linestyle='-', linewidth=2))
     ratioGraph.append(plt.plot([endfall, endfall], [2, 0], color='k', linestyle='-', linewidth=2))
@@ -106,11 +119,19 @@ def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratio
     # ratioGraph.set_ylabel("Ratio W/H")
     plt.show()
 
+    print("Average Ratio Graph for video: " + videoName)
+    plt.plot( 'frames', 'average ratios', data=ratioAverageData, marker='o', color='navy')
+    plt.plot([startfall, startfall], [1, 0], color='k', linestyle='-', linewidth=2)
+    plt.plot([endfall, endfall], [1, 0], color='k', linestyle='-', linewidth=2)
+    plt.show()
+
+    print("Change in Ratio Graph for video: " + videoName)
     plt.plot( 'frames', 'delta ratios', data=ratioChangeData, marker='o', color='blue')
     plt.plot([startfall, startfall], [1, 0], color='k', linestyle='-', linewidth=2)
     plt.plot([endfall, endfall], [1, 0], color='k', linestyle='-', linewidth=2)
     plt.show()
 
+    print("Area Graph for video: " + videoName)
     areaGraph = plt.plot( 'frames', 'areas', data=areaData, marker='o', color='g')
     areaGraph.append(plt.plot([startfall, startfall], [10000, 0], color='k', linestyle='-', linewidth=2))
     areaGraph.append(plt.plot([endfall, endfall], [10000, 0], color='k', linestyle='-', linewidth=2))
@@ -119,6 +140,16 @@ def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratio
     # areaGraph.set_ylabel("Area")
     plt.show()
 
+    print("Average Area Graph for video: " + videoName)
+    areaGraph = plt.plot( 'frames', 'average areas', data=areaAverageData, marker='o', color='chartreuse')
+    areaGraph.append(plt.plot([startfall, startfall], [10000, 0], color='k', linestyle='-', linewidth=2))
+    areaGraph.append(plt.plot([endfall, endfall], [10000, 0], color='k', linestyle='-', linewidth=2))
+    # areaGraph.set_title("Area of bouncing rectangle")
+    # areaGraph.set_xlabel("Frame")
+    # areaGraph.set_ylabel("Area")
+    plt.show()
+
+    print("Chage of Area Graph for video: " + videoName)
     plt.plot( 'frames', 'delta areas', data=areaChangeData, marker='o', color='lime')
     # plt.plot([startfall, startfall], [np.amin(areaChangeData.values, axis = 1), np.amax(areaChangeData.values, axis = 1)], color='k', linestyle='-', linewidth=2)
     # plt.plot([endfall, endfall], [np.amin(areaChangeData.values, axis = 1), np.amax(areaChangeData.values, axis = 1)], color='k', linestyle='-', linewidth=2)

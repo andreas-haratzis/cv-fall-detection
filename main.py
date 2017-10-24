@@ -5,7 +5,7 @@ import reasoning
 import cv2
 import sys
 import os
-#b1, b2, fw1, fw2, fr1, fr2, obs1, obs2, obs3, obs4, obs5, obs6, obs7, obs8, shoes1, shoes2
+vidlist =("b1", "b2", "fw1", "fw2", "fr1", "fr2", "obs1", "obs2", "obs3", "obs4", "obs5", "obs6", "obs7", "obs8", "shoes1", "shoes2")
 fallstart = (20, 20, 68, 71, 60, 23, 60, 60, 1, 1, 58, 0, 136, 103, 48, 10)
 fallend = (60, 67, 133, 116, 120, 77, 102, 119, 28, 42, 92, 0, 184, 158, 148, 124)
 
@@ -44,10 +44,10 @@ def play(folder, count):
         cleaned_frame = corrections.clean_frame(frame)
         detection_result_a = detectiona.parse_frame(cleaned_frame)
         detection_result_b = detectionb.parse_frame(cleaned_frame)
-        result, ldata, rdata, adata, delLdata, delRdata, delAdata = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b)
+        result, ldata, rdata, adata, delLdata, delRdata, delAdata, aveAdata, aveRdata = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b)
         cv2.imshow("Result", result)
         cv2.waitKey(1)
-    reasoning.end(ldata, rdata, adata, delLdata, delRdata, delAdata, fallstart[count], fallend[count])
+    reasoning.end(ldata, rdata, adata, delLdata, delRdata, delAdata, aveAdata, aveRdata, fallstart[count], fallend[count], vidlist[count])
 
 
 def load(folder_path):
