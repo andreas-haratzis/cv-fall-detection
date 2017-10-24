@@ -44,10 +44,10 @@ def play(folder, count):
         cleaned_frame = corrections.clean_frame(frame)
         detection_result_a = detectiona.parse_frame(cleaned_frame)
         detection_result_b = detectionb.parse_frame(cleaned_frame)
-        result, ldata, rdata, adata = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b)
+        result, ldata, rdata, adata, delLdata, delRdata, delAdata = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b)
         cv2.imshow("Result", result)
         cv2.waitKey(1)
-    reasoning.end(ldata, rdata, adata, fallstart[count], fallend[count])
+    reasoning.end(ldata, rdata, adata, delLdata, delRdata, delAdata, fallstart[count], fallend[count])
 
 
 def load(folder_path):
