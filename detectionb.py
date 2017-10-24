@@ -2,7 +2,6 @@ import os
 import sys
 import cv2
 import numpy as np
-from scipy.misc import imread
 from sklearn.decomposition import PCA
 import copy
 import math
@@ -11,8 +10,6 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, PathPatch
 from mpl_toolkits.mplot3d import Axes3D 
 import mpl_toolkits.mplot3d.art3d as art3d
-
-from plyfile import PlyData, PlyElement
 
 def init():
     pass
@@ -103,6 +100,7 @@ def parse_frame(frame):
     return angle
     """
     sess, inputs, outputs = nn_configs
+    
 
     res = cv2.bitwise_and(frame[2],frame[2],mask = frame[4])
 
