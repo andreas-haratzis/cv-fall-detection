@@ -29,10 +29,11 @@ def parse_frame(frame):
     # Create a 25 by 25 kernel for closing the image. This will join two 
     # disjoint moving objects in the image which, from the assumption, should be 
     # part of the same image
-    kernel = np.ones((25,25))
+    kernel = np.ones((40,40))
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
     # Threshold the closed image 
     ret, thresh = cv2.threshold(closing, 127, 255, 0)
+    cv2.imshow("fg", thresh)
     # create a new frame
     return_frame = copy.copy(frame[2])
     # Fidn contonuous blobs of the color white in the image
@@ -66,13 +67,13 @@ def parse_frame(frame):
         center = tuple([int(val) for val in center])
         # Compare line lengths and take the largest one
         #try:
+        # Angle initialized to be -1
         try:
             vert_start_3d = np.array(pixel_3d[vert_start[0]][vert_start[1]])
             vert_end_3d = np.array(pixel_3d[vert_end[0]][vert_end[1]])
 
             angle = math.acos(sum(vert_end_3d * vert_start_3d)/(math.sqrt(modulo(vert_end_3d)) *\
                     math.sqrt(modulo(vert_start_3d)))) * 180/np.pi
-            print(angle)
         except:
             continue
         """
@@ -94,12 +95,12 @@ def parse_frame(frame):
             angle = math.atan2(hori_end[1] - hori_start[1], hori_end[0] - hori_start[0]) * 180/np.pi
         """
         # Draw the two axes
-        cv2.line(return_frame, vert_start, vert_end, (255,0,0), 4)
-        cv2.line(return_frame, hori_start, hori_end, (255,0,0), 4)
+        #cv2.line(return_frame, vert_start, vert_end, (255,0,0), 4)
+        #cv2.line(return_frame, hori_start, hori_end, (255,0,0), 4)
         # Draw the contours
-        cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
+        #cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
 
-    return return_frame
+    return angle
     """
     sess, inputs, outputs = nn_configs
 
