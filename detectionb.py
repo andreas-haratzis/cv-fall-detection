@@ -30,11 +30,15 @@ def parse_frame(frame):
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
     # Threshold the closed image 
     ret, thresh = cv2.threshold(closing, 127, 255, 0)
-    cv2.imshow("fg", thresh)
     # create a new frame
     return_frame = copy.copy(frame[2])
     # Fidn contonuous blobs of the color white in the image
     im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # Initialize angle to -1
+    angle = -1
+    # List for storing average depth image pixel values
+    # For contours
+    person_avg = []
     # For all the contours
     for contour in contours:
         # Filter out the really small ones
@@ -59,13 +63,17 @@ def parse_frame(frame):
         hori_end = tuple([int(val) for val in center + (0.08 * pca.components_[1][0]*dist[1],\
                 0.08 * pca.components_[1][1]*dist[1])])
         
-        
         # Convert the center list to a tuple
         center = tuple([int(val) for val in center])
         # Compare line lengths and take the largest one
         #try:
         # Angle initialized to be -1
         try:
+            all_values = []
+
+            for pixel in [vert_end, vert_start, hori_start, hori_end]:
+                all_values.append(depth_gray[pixel[0]][pixel[1]])
+            person_avg.append(np.mean(np.array(all_values)))
             vert_start_3d = np.array(pixel_3d[vert_start[0]][vert_start[1]])
             vert_end_3d = np.array(pixel_3d[vert_end[0]][vert_end[1]])
 
@@ -97,7 +105,7 @@ def parse_frame(frame):
         # Draw the contours
         #cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
 
-    return angle
+    return [angle,person_avg] 
     """
     sess, inputs, outputs = nn_configs
     
