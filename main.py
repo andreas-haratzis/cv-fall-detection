@@ -27,19 +27,19 @@ def play(folder):
         print('Failed to load video')
         sys.exit(1)
 
-    print('Initializing')
+    print('Initializing...')
     corrections.init()
     detectiona.init()
     detectionb.init()
     reasoning.init()
 
-    print('Running')
+    print('Running...')
     for frame in video:
         cleaned_frame = corrections.clean_frame(frame)
-        detection_result_a = detectiona.parse_frame(cleaned_frame)
-        detection_result_b = detectionb.parse_frame(cleaned_frame)
-        result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b)
-        cv2.imshow("Result", result)
+        #detection_result_a = detectiona.parse_frame(cleaned_frame)
+        detection_result_b = detectionb.parse_frame(cleaned_frame)#, NN_CONFIGS, cfg)
+        #result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b)
+        cv2.imshow("RESULT", detection_result_b)
         cv2.waitKey(1)
 
 

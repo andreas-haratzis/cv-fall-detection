@@ -143,8 +143,8 @@ def parse_frame(frame):
 
     imsToShow.append(pedframe)
 
-    if imsToShow is not []:
-        cv2.imshow('Detection A', cv2.hconcat(imsToShow))
+    #if imsToShow is not []:
+        #cv2.imshow('Detection A', cv2.hconcat(imsToShow))
 
     prev_frame = frame_bw
 

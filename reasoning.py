@@ -5,4 +5,5 @@ def init():
 
 
 def reason(frame, originalFrame, detection_results_a, detection_results_b):
-    return originalFrame[0]
+    return frame[0]
+    #return originalFrame[0]
