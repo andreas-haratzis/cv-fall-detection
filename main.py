@@ -6,8 +6,11 @@ import cv2
 import sys
 import os
 import numpy as np
+import time
 
 roi_avg = None
+mouse_coords = []
+
 
 def main():
     if len(sys.argv) <= 1:
@@ -43,8 +46,8 @@ def play(folder):
         detection_result_b = detectionb.parse_frame(cleaned_frame)#, NN_CONFIGS, cfg)
         #result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
         #cv2.imshow("RESULT", detection_result_b)
-        print(roi_avg, detection_result_b[1])
-        print(detection_result_b[0])
+        #print(roi_avg, detection_result_b[1])
+        #print(detection_result_b[0])
         cv2.waitKey(1)
 
 
@@ -70,11 +73,25 @@ def load(folder_path):
     print('Loaded %d frames' % counter)
     return video
 
+def mouse_callback(event, x, y, flags, params):
+    #right-click event value is 2
+    if event == 4:
+        global mouse_coords
+
+        #store the coordinates of the right-click event
+        mouse_coords.append([x, y])
+
+        #this just verifies that the mouse data is being collected
+        #you probably want to remove this later
+        print mouse_coords
+
 def set_roi(dep):
     global roi_avg
     if roi_avg is None:
+        global mouse_coords
         print("INSIDE")
         # Resize the image to half
+        cv2.setMouseCallback('Output image', mouse_callback)
         frame_depth_half = cv2.resize(dep, (0,0), fx=0.5, fy=0.5)
         # Change to gray scale
         depth_gray = cv2.cvtColor(frame_depth_half, cv2.COLOR_BGR2GRAY)
@@ -82,6 +99,20 @@ def set_roi(dep):
         # Crop image
         roi = np.array(depth_gray[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])])
         roi_avg = np.mean(roi)
+
+	winname="Paint :: Press ESC to exit; Double Click to TAG"
+	cv2.namedWindow(winname)
+	cv2.setMouseCallback(winname,mouse_callback)
+	while(1):
+	    cv2.imshow(winname,frame_depth_half)
+            if len(mouse_coords) == 4:
+                break
+	    if cv2.waitKey(20) & 0xFF ==27:
+		break
+	cv2.destroyAllWindows()
+
+
+
 
 
 if __name__ == "__main__":

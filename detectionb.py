@@ -87,27 +87,10 @@ def parse_frame(frame):
                     math.sqrt(modulo(vert_start_3d)))) * 180/np.pi
         except:
             continue
-        """
-        len_line1 = math.sqrt((vert_start[0] - vert_end[0])**2 + (vert_end[1] - vert_start[1])**2)
-        len_line2 = math.sqrt((hori_start[0] - hori_end[0])**2 + (hori_end[1] - hori_start[1])**2)
-        if len_line1 > len_line2:
-            vert_end_3d = [vert_end[0], vert_end[1], depth_gray[vert_end[0]][vert_end[1]]]
-            vert_start_3d = [vert_start[0], vert_start[1], depth_gray[vert_start[0]][vert_start[1]]]
-            hori_start_3d = [hori_start[0], hori_start[1], depth_gray[hori_start[0]][hori_start[1]]]
-            hori_end_3d = [hori_end[0], hori_end[1], depth_gray[hori_end[0]][hori_end[1]]]
-            # do something
-            #angle = math.atan2(vert_end[1] - vert_start[1], 0) * 180/np.pi
-            #angle = math.atan2(0, vert_end[0] - vert_start[0]) * 180/np.pi
-            angle = math.atan2(vert_end[1] - vert_start[1], vert_end[0] - vert_start[0]) * 180/np.pi
-        else:
-            #do something else
-            #angle = math.atan2(hori_end[1] - hori_start[1], 0) * 180/np.pi
-            #angle = math.atan2(0, hori_end[0] - hori_start[0]) * 180/np.pi
-            angle = math.atan2(hori_end[1] - hori_start[1], hori_end[0] - hori_start[0]) * 180/np.pi
-        """
+
         # Draw the two axes
-        cv2.line(return_frame, vert_start, vert_end, (255,0,0), 4)
-        cv2.line(return_frame, hori_start, hori_end, (255,0,0), 4)
+        cv2.arrowedLine(return_frame, vert_start, vert_end, (255,0,0), 4)
+        cv2.arrowedLine(return_frame, hori_start, hori_end, (255,0,0), 4)
         # Draw the contours
         cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
     cv2.imshow("Output image", return_frame)
@@ -115,6 +98,24 @@ def parse_frame(frame):
     # Finds the mean of depth values in case multple contours were detected
     person_avg_depth_value = np.mean(np.array(person_avg))
     return [all_3d_points, person_avg_depth_value] 
+    """
+    len_line1 = math.sqrt((vert_start[0] - vert_end[0])**2 + (vert_end[1] - vert_start[1])**2)
+    len_line2 = math.sqrt((hori_start[0] - hori_end[0])**2 + (hori_end[1] - hori_start[1])**2)
+    if len_line1 > len_line2:
+        vert_end_3d = [vert_end[0], vert_end[1], depth_gray[vert_end[0]][vert_end[1]]]
+        vert_start_3d = [vert_start[0], vert_start[1], depth_gray[vert_start[0]][vert_start[1]]]
+        hori_start_3d = [hori_start[0], hori_start[1], depth_gray[hori_start[0]][hori_start[1]]]
+        hori_end_3d = [hori_end[0], hori_end[1], depth_gray[hori_end[0]][hori_end[1]]]
+        # do something
+        #angle = math.atan2(vert_end[1] - vert_start[1], 0) * 180/np.pi
+        #angle = math.atan2(0, vert_end[0] - vert_start[0]) * 180/np.pi
+        angle = math.atan2(vert_end[1] - vert_start[1], vert_end[0] - vert_start[0]) * 180/np.pi
+    else:
+        #do something else
+        #angle = math.atan2(hori_end[1] - hori_start[1], 0) * 180/np.pi
+        #angle = math.atan2(0, hori_end[0] - hori_start[0]) * 180/np.pi
+        angle = math.atan2(hori_end[1] - hori_start[1], hori_end[0] - hori_start[0]) * 180/np.pi
+    """
     """
     sess, inputs, outputs = nn_configs
     
