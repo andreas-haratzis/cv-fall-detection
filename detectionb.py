@@ -6,11 +6,6 @@ from sklearn.decomposition import PCA
 import copy
 import math
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, PathPatch
-from mpl_toolkits.mplot3d import Axes3D 
-import mpl_toolkits.mplot3d.art3d as art3d
-
 def init():
     pass
 

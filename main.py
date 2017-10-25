@@ -8,8 +8,9 @@ import os
 import numpy as np
 import time
 
-roi_avg = None
-mouse_coords = []
+roi_avg = 232.833333333
+mouse_coords = [[93, 115], [147, 103], [188, 166], [103, 187]]
+perpendicular_vec = None
 
 
 def main():
@@ -27,6 +28,7 @@ def main():
 
 
 def play(folder):
+    global perpendicular_vec
     print('Loading ' + folder)
     video = load(folder)
 
@@ -44,8 +46,9 @@ def play(folder):
     for frame in video:
         cleaned_frame = corrections.clean_frame(frame)
         detection_result_a = detectiona.parse_frame(cleaned_frame)
-        perpendicular = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
-        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular)#, NN_CONFIGS, cfg)
+        if perpendicular_vec is None:
+            perpendicular_vec = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
+        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular_vec)#, NN_CONFIGS, cfg)
         result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
         cv2.imshow("RESULT", result)
         #print(roi_avg, detection_result_b[1])
@@ -67,7 +70,7 @@ def load(folder_path):
     while os.path.isfile('%s/col_%d.png' % (vid_dir, counter)):
         col = cv2.imread('%s/col_%d.png' % (vid_dir, counter))
         dep = cv2.imread('%s/dep_%d.png' % (vid_dir, counter))
-        set_roi(dep)
+        #set_roi(dep)
         frame = (col, dep)
         video.append(frame)
         counter += 1
@@ -87,6 +90,7 @@ def mouse_callback(event, x, y, flags, params):
         #you probably want to remove this later
         print mouse_coords
 
+"""
 def set_roi(dep):
     global roi_avg
     if roi_avg is None:
@@ -101,6 +105,7 @@ def set_roi(dep):
         # Crop image
         roi = np.array(depth_gray[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])])
         roi_avg = np.mean(roi)
+        print(roi_avg)
 
 	winname="Choose the four ends of the plane"
 	cv2.namedWindow(winname)
@@ -113,7 +118,7 @@ def set_roi(dep):
 		break
 	cv2.destroyAllWindows()
 
-
+"""
 
 
 

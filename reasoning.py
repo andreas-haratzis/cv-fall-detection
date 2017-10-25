@@ -8,7 +8,7 @@ def init():
     pass
 
 
-def reason(frame, originalFrame, detection_results_a, detection_results_b):
+def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_avg):
 
     # Threshold values
     vector_Magnitude_Threshold = 3
