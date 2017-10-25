@@ -101,7 +101,7 @@ def set_roi(dep):
         roi = np.array(depth_gray[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])])
         roi_avg = np.mean(roi)
 
-	winname="Paint :: Press ESC to exit; Double Click to TAG"
+	winname="Choose the four ends of the plane"
 	cv2.namedWindow(winname)
 	cv2.setMouseCallback(winname,mouse_callback)
 	while(1):
