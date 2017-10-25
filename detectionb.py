@@ -6,11 +6,6 @@ from sklearn.decomposition import PCA
 import copy
 import math
 
-import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, PathPatch
-from mpl_toolkits.mplot3d import Axes3D 
-import mpl_toolkits.mplot3d.art3d as art3d
-
 def init():
     pass
 
@@ -40,7 +35,7 @@ def parse_frame(frame, perp):
     # Create a 25 by 25 kernel for closing the image. This will join two 
     # disjoint moving objects in the image which, from the assumption, should be 
     # part of the same image
-    kernel = np.ones((40,40))
+    kernel = np.ones((25,25))
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
     # Threshold the closed image 
     ret, thresh = cv2.threshold(closing, 127, 255, 0)

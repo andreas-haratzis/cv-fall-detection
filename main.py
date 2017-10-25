@@ -42,7 +42,7 @@ def play(folder):
     print('Running...')
     for frame in video:
         cleaned_frame = corrections.clean_frame(frame)
-        #detection_result_a = detectiona.parse_frame(cleaned_frame)
+        detection_result_a = detectiona.parse_frame(cleaned_frame)
         perpendicular = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
         detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular)#, NN_CONFIGS, cfg)
         #result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
@@ -90,7 +90,6 @@ def set_roi(dep):
     global roi_avg
     if roi_avg is None:
         global mouse_coords
-        print("INSIDE")
         # Resize the image to half
         cv2.setMouseCallback('Output image', mouse_callback)
         frame_depth_half = cv2.resize(dep, (0,0), fx=0.5, fy=0.5)
