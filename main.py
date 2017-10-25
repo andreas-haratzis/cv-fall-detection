@@ -48,7 +48,7 @@ def play(folder):
         detection_result_a = detectiona.parse_frame(cleaned_frame)
         if perpendicular_vec is None:
             perpendicular_vec = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
-        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular_vec)#, NN_CONFIGS, cfg)
+        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular_vec, roi_avg)#, NN_CONFIGS, cfg)
         result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
         cv2.imshow("RESULT", result)
         #print(roi_avg, detection_result_b[1])

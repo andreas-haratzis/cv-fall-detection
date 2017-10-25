@@ -24,7 +24,7 @@ def get_3d_coords(frame, roi):
     perp_a = np.cross(vec_a, vec_b)
     return perp_a
 
-def parse_frame(frame, perp):
+def parse_frame(frame, perp, avg):
     depth_gray = cv2.cvtColor(frame[5], cv2.COLOR_BGR2GRAY)
     pixel_3d = point_cloud(depth_gray)
 
@@ -80,6 +80,7 @@ def parse_frame(frame, perp):
         #try:
         # Angle initialized to be -1
         all_3d_points = []
+        color = (0, 255, 0)
         try:
             all_values = []
 
@@ -87,6 +88,8 @@ def parse_frame(frame, perp):
                 all_values.append(depth_gray[pixel[0]][pixel[1]])
 
             person_avg.append(np.mean(np.array(all_values)))
+            if np.mean(np.array(person_avg)) > avg - 5 and  np.mean(np.array(person_avg)) < avg + 5:
+                color = (0,0,255)
 
             vert_start_3d = np.array(pixel_3d[vert_start[0]][vert_start[1]])
             vert_end_3d = np.array(pixel_3d[vert_end[0]][vert_end[1]])
@@ -106,7 +109,7 @@ def parse_frame(frame, perp):
         cv2.arrowedLine(return_frame, vert_start, vert_end, (255,0,0), 4)
         cv2.arrowedLine(return_frame, hori_start, hori_end, (255,0,0), 4)
         # Draw the contours
-        cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
+        cv2.drawContours(return_frame, [contour], -1, color, 4)
     cv2.imshow("Output image", return_frame)
 
     # Finds the mean of depth values in case multple contours were detected
