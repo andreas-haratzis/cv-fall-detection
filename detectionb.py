@@ -54,6 +54,7 @@ def parse_frame(frame, perp):
     # For contours
     person_avg = []
     all_3d_points = []
+    dot_value = None
     # For all the contours
     for contour in contours:
         # Filter out the really small ones
@@ -84,7 +85,6 @@ def parse_frame(frame, perp):
         #try:
         # Angle initialized to be -1
         all_3d_points = []
-        dot_value = None
         try:
             all_values = []
 
