@@ -32,12 +32,12 @@ def parse_frame(frame, perp):
     # This will get rid of small specs of noise
     kernel = np.ones((5,5))
     opening = cv2.morphologyEx(frame[4], cv2.MORPH_OPEN, kernel)
-    # Create a 25 by 25 kernel for closing the image. This will join two 
-    # disjoint moving objects in the image which, from the assumption, should be 
+    # Create a 25 by 25 kernel for closing the image. This will join two
+    # disjoint moving objects in the image which, from the assumption, should be
     # part of the same image
     kernel = np.ones((40,40))
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
-    # Threshold the closed image 
+    # Threshold the closed image
     ret, thresh = cv2.threshold(closing, 127, 255, 0)
     # create a new frame
     return_frame = copy.copy(frame[2])
@@ -73,7 +73,7 @@ def parse_frame(frame, perp):
                 0.08 * pca.components_[1][1]*dist[1])])
         hori_end = tuple([int(val) for val in center + (0.08 * pca.components_[1][0]*dist[1],\
                 0.08 * pca.components_[1][1]*dist[1])])
-        
+
         # Convert the center list to a tuple
         center = tuple([int(val) for val in center])
         # Compare line lengths and take the largest one
@@ -111,7 +111,7 @@ def parse_frame(frame, perp):
 
     # Finds the mean of depth values in case multple contours were detected
     person_avg_depth_value = np.mean(np.array(person_avg))
-    return [all_3d_points, person_avg_depth_value, dot_value] 
+    return [all_3d_points, person_avg_depth_value, dot_value]
     """
     len_line1 = math.sqrt((vert_start[0] - vert_end[0])**2 + (vert_end[1] - vert_start[1])**2)
     len_line2 = math.sqrt((hori_start[0] - hori_end[0])**2 + (hori_end[1] - hori_start[1])**2)
@@ -132,12 +132,12 @@ def parse_frame(frame, perp):
     """
     """
     sess, inputs, outputs = nn_configs
-    
+
 
     res = cv2.bitwise_and(frame[2],frame[2],mask = frame[4])
 
     image_batch = data_to_input(res)
-    cv2.imshow("residual image", res) 
+    cv2.imshow("residual image", res)
     # Compute prediction with the CNN
     outputs_np = sess.run(outputs, feed_dict={inputs: image_batch})
     scmap, locref, _ = predict.extract_cnn_output(outputs_np, cfg)

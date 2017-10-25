@@ -88,7 +88,7 @@ def mouse_callback(event, x, y, flags, params):
 
         #this just verifies that the mouse data is being collected
         #you probably want to remove this later
-        print mouse_coords
+        print (mouse_coords)
 
 """
 def set_roi(dep):
@@ -107,16 +107,16 @@ def set_roi(dep):
         roi_avg = np.mean(roi)
         print(roi_avg)
 
-	winname="Choose the four ends of the plane"
-	cv2.namedWindow(winname)
-	cv2.setMouseCallback(winname,mouse_callback)
-	while(1):
-	    cv2.imshow(winname,frame_depth_half)
-            if len(mouse_coords) == 4:
-                break
-	    if cv2.waitKey(20) & 0xFF ==27:
-		break
-	cv2.destroyAllWindows()
+    winname="Choose the four ends of the plane"
+    cv2.namedWindow(winname)
+    cv2.setMouseCallback(winname,mouse_callback)
+    while(1):
+        cv2.imshow(winname,frame_depth_half)
+        if len(mouse_coords) == 4:
+            break
+        if cv2.waitKey(20) & 0xFF ==27:
+            break
+    cv2.destroyAllWindows()
 
 """
 
