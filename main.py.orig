@@ -5,13 +5,18 @@ import reasoning
 import cv2
 import sys
 import os
+<<<<<<< HEAD
+# vidlist =("b1", "b2", "fw1", "fw2", "fr1", "fr2", "obs1", "obs2", "obs3", "obs4", "obs5", "obs6", "obs7", "obs8", "shoes1", "shoes2")
+# fallstart = (20, 20, 68, 71, 60, 23, 60, 60, 1, 1, 58, 0, 136, 103, 48, 10)
+# fallend = (60, 67, 133, 116, 120, 77, 102, 119, 28, 42, 92, 0, 184, 158, 148, 124)
+=======
 import numpy as np
 import time
 
-roi_avg = 232.833333333
-mouse_coords = [[93, 115], [147, 103], [188, 166], [103, 187]]
-perpendicular_vec = None
+roi_avg = None
+mouse_coords = []
 
+>>>>>>> origin/detectionb
 
 def main():
     if len(sys.argv) <= 1:
@@ -28,7 +33,6 @@ def main():
 
 
 def play(folder):
-    global perpendicular_vec
     print('Loading ' + folder)
     video = load(folder)
 
@@ -45,12 +49,11 @@ def play(folder):
     print('Running...')
     for frame in video:
         cleaned_frame = corrections.clean_frame(frame)
-        detection_result_a = detectiona.parse_frame(cleaned_frame)
-        if perpendicular_vec is None:
-            perpendicular_vec = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
-        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular_vec)#, NN_CONFIGS, cfg)
-        result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
-        cv2.imshow("RESULT", result)
+        #detection_result_a = detectiona.parse_frame(cleaned_frame)
+        perpendicular = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
+        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular)#, NN_CONFIGS, cfg)
+        #result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
+        #cv2.imshow("RESULT", detection_result_b)
         #print(roi_avg, detection_result_b[1])
         #print(detection_result_b[0])
         cv2.waitKey(1)
@@ -70,7 +73,7 @@ def load(folder_path):
     while os.path.isfile('%s/col_%d.png' % (vid_dir, counter)):
         col = cv2.imread('%s/col_%d.png' % (vid_dir, counter))
         dep = cv2.imread('%s/dep_%d.png' % (vid_dir, counter))
-        #set_roi(dep)
+        set_roi(dep)
         frame = (col, dep)
         video.append(frame)
         counter += 1
@@ -88,13 +91,13 @@ def mouse_callback(event, x, y, flags, params):
 
         #this just verifies that the mouse data is being collected
         #you probably want to remove this later
-        print (mouse_coords)
+        print mouse_coords
 
-"""
 def set_roi(dep):
     global roi_avg
     if roi_avg is None:
         global mouse_coords
+        print("INSIDE")
         # Resize the image to half
         cv2.setMouseCallback('Output image', mouse_callback)
         frame_depth_half = cv2.resize(dep, (0,0), fx=0.5, fy=0.5)
@@ -104,20 +107,19 @@ def set_roi(dep):
         # Crop image
         roi = np.array(depth_gray[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])])
         roi_avg = np.mean(roi)
-        print(roi_avg)
 
-    winname="Choose the four ends of the plane"
-    cv2.namedWindow(winname)
-    cv2.setMouseCallback(winname,mouse_callback)
-    while(1):
-        cv2.imshow(winname,frame_depth_half)
-        if len(mouse_coords) == 4:
-            break
-        if cv2.waitKey(20) & 0xFF ==27:
-            break
-    cv2.destroyAllWindows()
+	winname="Paint :: Press ESC to exit; Double Click to TAG"
+	cv2.namedWindow(winname)
+	cv2.setMouseCallback(winname,mouse_callback)
+	while(1):
+	    cv2.imshow(winname,frame_depth_half)
+            if len(mouse_coords) == 4:
+                break
+	    if cv2.waitKey(20) & 0xFF ==27:
+		break
+	cv2.destroyAllWindows()
 
-"""
+
 
 
 
