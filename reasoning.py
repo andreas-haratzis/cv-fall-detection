@@ -9,6 +9,7 @@ def init():
 
 
 def reason(frame, originalFrame, detection_results_a, detection_results_b):
+<<<<<<< HEAD
 
     # Threshold values
     vector_Magnitude_Threshold = 3
@@ -267,3 +268,7 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b):
     # plt.plot([startfall, startfall], [np.amin(areaData.values, axis = 1), np.amax(areaData.values, axis = 1)], color='k', linestyle='-', linewidth=2)
     # plt.plot([endfall, endfall], [np.amin(areaData.values, axis = 1), np.amax(areaData.values, axis = 1)], color='k', linestyle='-', linewidth=2)
     # plt.show()
+=======
+    return frame[0]
+    #return originalFrame[0]
+>>>>>>> origin/detectionb
