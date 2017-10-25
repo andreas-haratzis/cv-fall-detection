@@ -39,6 +39,7 @@ def parse_frame(frame):
     # List for storing average depth image pixel values
     # For contours
     person_avg = []
+    all_3d_points = []
     # For all the contours
     for contour in contours:
         # Filter out the really small ones
@@ -68,15 +69,20 @@ def parse_frame(frame):
         # Compare line lengths and take the largest one
         #try:
         # Angle initialized to be -1
+        all_3d_points = []
         try:
             all_values = []
 
             for pixel in [vert_end, vert_start, hori_start, hori_end]:
                 all_values.append(depth_gray[pixel[0]][pixel[1]])
+
             person_avg.append(np.mean(np.array(all_values)))
+
             vert_start_3d = np.array(pixel_3d[vert_start[0]][vert_start[1]])
             vert_end_3d = np.array(pixel_3d[vert_end[0]][vert_end[1]])
-
+            hori_start_3d = np.array(pixel_3d[hori_start[0]][hori_start[1]])
+            hori_end_3d = np.array(pixel_3d[hori_end[0]][hori_end[1]])
+            all_3d_points = [vert_start_3d, vert_end_3d, hori_end_3d, hori_start_3d]
             angle = math.acos(sum(vert_end_3d * vert_start_3d)/(math.sqrt(modulo(vert_end_3d)) *\
                     math.sqrt(modulo(vert_start_3d)))) * 180/np.pi
         except:
@@ -100,12 +106,15 @@ def parse_frame(frame):
             angle = math.atan2(hori_end[1] - hori_start[1], hori_end[0] - hori_start[0]) * 180/np.pi
         """
         # Draw the two axes
-        #cv2.line(return_frame, vert_start, vert_end, (255,0,0), 4)
-        #cv2.line(return_frame, hori_start, hori_end, (255,0,0), 4)
+        cv2.line(return_frame, vert_start, vert_end, (255,0,0), 4)
+        cv2.line(return_frame, hori_start, hori_end, (255,0,0), 4)
         # Draw the contours
-        #cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
+        cv2.drawContours(return_frame, [contour], -1, (0,255,0), 4)
+    cv2.imshow("Output image", return_frame)
 
-    return [angle,person_avg] 
+    # Finds the mean of depth values in case multple contours were detected
+    person_avg_depth_value = np.mean(np.array(person_avg))
+    return [all_3d_points, person_avg_depth_value] 
     """
     sess, inputs, outputs = nn_configs
     

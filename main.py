@@ -43,7 +43,9 @@ def play(folder):
         detection_result_b = detectionb.parse_frame(cleaned_frame)#, NN_CONFIGS, cfg)
         #result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
         #cv2.imshow("RESULT", detection_result_b)
-        #cv2.waitKey(1)
+        print(roi_avg, detection_result_b[1])
+        print(detection_result_b[0])
+        cv2.waitKey(1)
 
 
 def load(folder_path):
@@ -71,6 +73,7 @@ def load(folder_path):
 def set_roi(dep):
     global roi_avg
     if roi_avg is None:
+        print("INSIDE")
         # Resize the image to half
         frame_depth_half = cv2.resize(dep, (0,0), fx=0.5, fy=0.5)
         # Change to gray scale
