@@ -14,8 +14,22 @@ import mpl_toolkits.mplot3d.art3d as art3d
 def init():
     pass
 
+def get_3d_coords(frame, roi):
+    depth_gray = cv2.cvtColor(frame[5], cv2.COLOR_BGR2GRAY)
+    pixel_3d = point_cloud(depth_gray)
+    new_3d_coords = []
+    for pixel in roi:
+        try:
+            new_3d_coords.append(np.array(pixel_3d[pixel[0]][pixel[1]]))
+        except:
+            continue
 
-def parse_frame(frame):
+    vec_a = new_3d_coords[0] - new_3d_coords[1]
+    vec_b = new_3d_coords[3] - new_3d_coords[2]
+    perp_a = np.cross(vec_a, vec_b)
+    return perp_a
+
+def parse_frame(frame, perp):
     depth_gray = cv2.cvtColor(frame[5], cv2.COLOR_BGR2GRAY)
     pixel_3d = point_cloud(depth_gray)
 
@@ -70,6 +84,7 @@ def parse_frame(frame):
         #try:
         # Angle initialized to be -1
         all_3d_points = []
+        dot_value = None
         try:
             all_values = []
 
@@ -80,6 +95,10 @@ def parse_frame(frame):
 
             vert_start_3d = np.array(pixel_3d[vert_start[0]][vert_start[1]])
             vert_end_3d = np.array(pixel_3d[vert_end[0]][vert_end[1]])
+
+            vert_vec = vert_start_3d - vert_end_3d
+            dot_value = np.dot(vert_vec, perp)
+
             hori_start_3d = np.array(pixel_3d[hori_start[0]][hori_start[1]])
             hori_end_3d = np.array(pixel_3d[hori_end[0]][hori_end[1]])
             all_3d_points = [vert_start_3d, vert_end_3d, hori_end_3d, hori_start_3d]
@@ -97,7 +116,7 @@ def parse_frame(frame):
 
     # Finds the mean of depth values in case multple contours were detected
     person_avg_depth_value = np.mean(np.array(person_avg))
-    return [all_3d_points, person_avg_depth_value] 
+    return [all_3d_points, person_avg_depth_value, dot_value] 
     """
     len_line1 = math.sqrt((vert_start[0] - vert_end[0])**2 + (vert_end[1] - vert_start[1])**2)
     len_line2 = math.sqrt((hori_start[0] - hori_end[0])**2 + (hori_end[1] - hori_start[1])**2)
@@ -154,7 +173,7 @@ def point_cloud(depth):
     rows, cols = depth.shape
     c, r = np.meshgrid(np.arange(cols), np.arange(rows), sparse=True)
     valid = (depth > 0) & (depth <= 255)
-    z = depth
+    z = np.array(depth)
     x = np.where(valid, z * (c - cx) / fx, 0)
     y = np.where(valid, z * (r - cy) / fy, 0)
     return np.dstack((x, y, z)).astype(int)

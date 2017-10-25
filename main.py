@@ -43,7 +43,8 @@ def play(folder):
     for frame in video:
         cleaned_frame = corrections.clean_frame(frame)
         #detection_result_a = detectiona.parse_frame(cleaned_frame)
-        detection_result_b = detectionb.parse_frame(cleaned_frame)#, NN_CONFIGS, cfg)
+        perpendicular = detectionb.get_3d_coords(cleaned_frame, mouse_coords)
+        detection_result_b = detectionb.parse_frame(cleaned_frame, perpendicular)#, NN_CONFIGS, cfg)
         #result = reasoning.reason(cleaned_frame, frame, detection_result_a, detection_result_b, roi_avg)
         #cv2.imshow("RESULT", detection_result_b)
         #print(roi_avg, detection_result_b[1])
@@ -79,7 +80,7 @@ def mouse_callback(event, x, y, flags, params):
         global mouse_coords
 
         #store the coordinates of the right-click event
-        mouse_coords.append([x, y])
+        mouse_coords.append([x, y, len(mouse_coords)])
 
         #this just verifies that the mouse data is being collected
         #you probably want to remove this later
