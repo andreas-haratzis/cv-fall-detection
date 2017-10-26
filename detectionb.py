@@ -97,6 +97,9 @@ def parse_frame(frame, perp, avg):
             vert_vec = vert_start_3d - vert_end_3d
             dot_value = np.dot(vert_vec, perp)
 
+            if vert_start[0] > vert_end[0] + 25 or vert_start[0] < vert_end[0] - 25:
+                color = (0,0,255)
+
             hori_start_3d = np.array(pixel_3d[hori_start[0]][hori_start[1]])
             hori_end_3d = np.array(pixel_3d[hori_end[0]][hori_end[1]])
             all_3d_points = [vert_start_3d, vert_end_3d, hori_end_3d, hori_start_3d]
