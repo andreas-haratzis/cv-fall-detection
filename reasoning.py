@@ -4,8 +4,11 @@ import pandas as pd
 import numpy as np
 import cv2
 
+all_b_results = []
+
 def init():
-    pass
+    global all_b_results
+    all_b_results = []
 
 
 def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_avg):
@@ -17,6 +20,7 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
     deltaRatioFallenThreshold = 0.0015
     ratioThreshold = 0.5
     ratioFallenThreshold = 1.15
+    ratioFallenThresholdB = 1.6
     aveDeltaAreaThreshold = 250
     aveDeltaAreaFallenThreshold = 13
     deltaVertMagThreshold = 3
@@ -96,6 +100,7 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
     deltaRatioPass = False
     deltaAreasPass = False
     deltaVertMagsPass = False
+    notFallenB = False
 
     VectorPass = False
 
@@ -123,6 +128,16 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
                     cv2.rectangle(originalFrame[0], (x - 6, y - 6), (x + w + 6, y + h + 6), colourArr[3], 2)
                     deltaAreasPass = True
 
+        if (ratios[xAxisLength - 1] < ratioFallenThresholdB and ratios[xAxisLength - 1] > ratioFallenThreshold):
+            # Detection B
+            person_avg = detection_results_b[1]
+            if person_avg is None:
+                person_avg = 0
+            diff = abs(person_avg - roi_avg)
+            notFallenB = (diff > 10)
+            if (notFallenB):
+                print("AFTER FALL: NOT fallen B")
+
         #check to see if the length of the Vector is passing a threshold value
         if (lengths[xAxisLength-1] > vector_Magnitude_Threshold):
             # If the vector is above a certain magnitude
@@ -144,9 +159,12 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
     # Make the call wether they are falling or have fallen
 
     # for Fallen, use a best-two-out-of-three case looking for certain values
-    if (((deltaRatioPass or deltaVertMagsPass) and deltaAreasPass) or (deltaRatioPass and deltaVertMagsPass)):
-        Fallen = True
+    fallenA = ((deltaRatioPass or deltaVertMagsPass) and deltaAreasPass) or (deltaRatioPass and deltaVertMagsPass)
+
+    fallen = (not notFallenB) and fallenA
+    if (fallen):
         cv2.rectangle(originalFrame[0], (x, y), (x + w, y + h), colourArr[2], 8)
+
 
     # Create data
     yAxis = range(1,xAxisLength+1)
@@ -181,12 +199,22 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
 
 
     #Detection B!
-
+    all_b_results.append(detection_results_b)
 
 
 
     return originalFrame[0]#, lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData, areaAverageData, ratioAverageData
     #return originalFrame[0], angleData, lengthData, ratioData, areaData
+
+
+def end(avg):
+    raw_dist = [0 if x[2] is None else abs(avg - x[1]) for x in all_b_results]
+    smoothed_dist = []
+    for i in range(0, len(raw_dist)):
+        smoothed_dist.append(np.average(raw_dist[i:min(len(raw_dist), i + 10)]))
+    angleGraph = plt.plot(smoothed_dist, marker='o', color='mediumvioletred')
+    plt.show()
+
 
 #def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData, areaAverageData, ratioAverageData, startfall, endfall, videoName):
     #pass

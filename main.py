@@ -54,7 +54,7 @@ def play(folder):
         #print(roi_avg, detection_result_b[1])
         #print(detection_result_b[0])
         cv2.waitKey(1)
-
+    reasoning.end(roi_avg)
 
 def load(folder_path):
     path = os.path.dirname(os.path.realpath(__file__))
@@ -74,6 +74,8 @@ def load(folder_path):
         frame = (col, dep)
         video.append(frame)
         counter += 1
+        #if counter is 30:
+        #    break
 
     print('Loaded %d frames' % counter)
     return video
