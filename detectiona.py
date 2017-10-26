@@ -66,7 +66,7 @@ def parse_frame(frame):
     else:
         # Update MHI
         temp = mhi.astype(numpy.int16)
-        temp = temp - 1
+        temp = temp - 4
         temp = temp + frame.fg
         temp[temp > 255] = 255
         temp[temp < 0] = 0

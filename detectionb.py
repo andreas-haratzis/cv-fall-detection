@@ -112,7 +112,7 @@ def parse_frame(frame, perp, avg):
         cv2.arrowedLine(return_frame, vert_start, vert_end, (255,0,0), 4)
         cv2.arrowedLine(return_frame, hori_start, hori_end, (255,0,0), 4)
         # Draw the contours
-        cv2.drawContours(return_frame, [contour], -1, color, 4)
+        cv2.drawContours(return_frame, [contour], -1, (0, 255, 0), 4)
     cv2.imshow("Output image", return_frame)
 
     # Finds the mean of depth values in case multple contours were detected

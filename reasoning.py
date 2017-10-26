@@ -89,10 +89,11 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
             averageDeltaAreas[i-5] = (deltaAreas[i-1] + deltaAreas[i-2] + deltaAreas[i-3] + deltaAreas[i-4] + deltaAreas[i-5])/5
 
     #Draw some bounding boxes for clear testing, comment out during final product launch
-    colref = ((0,0,0),(255,255,255))
+    #colref = ((0,0,0),(255,255,255))
     if (xAxisLength > 0):
-        for j in range (0,7):
-            cv2.rectangle(originalFrame[0], (x - (j*2), y - (j*2)), (x + w + (j*2), y + h + (j*2)), colref[((j+1)%2)], 2)
+        cv2.rectangle(originalFrame[0], (x, y), (x + w, y + h), (255,255,255), 2)
+        #for j in range (0,7):
+        #    cv2.rectangle(originalFrame[0], (x - (j*2), y - (j*2)), (x + w + (j*2), y + h + (j*2)), colref[((j+1)%2)], 2)
 
     duringFall = False
     afterFall = False
@@ -113,19 +114,19 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
         #check to see if the ratio of sides of the bounding rectangle is passing a threshold value
         if (ratios[xAxisLength-1] > ratioFallenThreshold):
             print ("FALLEN FIRST CHECK: ratios greater than 1:1")
-            cv2.rectangle(originalFrame[0], (x, y), (x + w, y + h), colourArr[0], 2)
+            #cv2.rectangle(originalFrame[0], (x, y), (x + w, y + h), colourArr[0], 2)
             if (deltaRatios[xAxisLength-2] < deltaRatioFallenThreshold):
                 print ("AFTER FALL: Low Delta Ratio")
-                cv2.rectangle(originalFrame[0], (x - 2, y - 2), (x + w + 2, y + h + 2), colourArr[1], 2)
+                #cv2.rectangle(originalFrame[0], (x - 2, y - 2), (x + w + 2, y + h + 2), colourArr[1], 2)
                 deltaRatioPass = True
             if (deltaVertMags[xAxisLength-2] < deltaMagnitudeFallenThreshold):
                 print ("AFTER FALL: Low Delta Magnitude")
-                cv2.rectangle(originalFrame[0], (x - 4, y - 4), (x + w + 4, y + h + 4), colourArr[2], 2)
+                #cv2.rectangle(originalFrame[0], (x - 4, y - 4), (x + w + 4, y + h + 4), colourArr[2], 2)
                 deltaVertMagsPass = True
             if (xAxisLength > 5):
                 if (averageDeltaAreas[xAxisLength-6] < aveDeltaAreaFallenThreshold):
                     print ("AFTER FALL: Low Average Delta Areas")
-                    cv2.rectangle(originalFrame[0], (x - 6, y - 6), (x + w + 6, y + h + 6), colourArr[3], 2)
+                    #cv2.rectangle(originalFrame[0], (x - 6, y - 6), (x + w + 6, y + h + 6), colourArr[3], 2)
                     deltaAreasPass = True
 
         if (ratios[xAxisLength - 1] < ratioFallenThresholdB and ratios[xAxisLength - 1] > ratioFallenThreshold):
@@ -145,22 +146,24 @@ def reason(frame, originalFrame, detection_results_a, detection_results_b, roi_a
             if (deltaVertMags[xAxisLength-2] > deltaVertMagThreshold):
                 # And the Vector is pointing downwards
                 print ("FALLING: Vector direction pass")
-                cv2.rectangle(originalFrame[0], (x - 8, y - 8), (x + w + 8, y + h + 8), colourArr[4], 2)
+                #cv2.rectangle(originalFrame[0], (x - 8, y - 8), (x + w + 8, y + h + 8), colourArr[4], 2)
 
         if (deltaRatios[xAxisLength-2] > deltaRatioThreshold):
             print ("FALLING: Delta Ratio pass")
-            cv2.rectangle(originalFrame[0], (x - 10, y - 10), (x + w + 10, y + h + 10), colourArr[5], 2)
+            #cv2.rectangle(originalFrame[0], (x - 10, y - 10), (x + w + 10, y + h + 10), colourArr[5], 2)
 
         if (xAxisLength > 5):
             if (averageDeltaAreas[xAxisLength-6] > aveDeltaAreaThreshold):
                 print ("FALLING: Average Delta Areas")
-                cv2.rectangle(originalFrame[0], (x - 12, y - 12), (x + w + 12, y + h + 12), colourArr[6], 2)
+                #cv2.rectangle(originalFrame[0], (x - 12, y - 12), (x + w + 12, y + h + 12), colourArr[6], 2)
 
     # Make the call wether they are falling or have fallen
 
     # for Fallen, use a best-two-out-of-three case looking for certain values
     fallenA = ((deltaRatioPass or deltaVertMagsPass) and deltaAreasPass) or (deltaRatioPass and deltaVertMagsPass)
-
+    if (xAxisLength > 0):
+        if (fallenA):
+            cv2.rectangle(originalFrame[0], (x, y), (x + w, y + h), colourArr[0], 2)
     fallen = (not notFallenB) and fallenA
     if (fallen):
         cv2.rectangle(originalFrame[0], (x, y), (x + w, y + h), colourArr[2], 8)
@@ -213,7 +216,7 @@ def end(avg):
     for i in range(0, len(raw_dist)):
         smoothed_dist.append(np.average(raw_dist[i:min(len(raw_dist), i + 10)]))
     angleGraph = plt.plot(smoothed_dist, marker='o', color='mediumvioletred')
-    plt.show()
+    #plt.show()
 
 
 #def end(lengthData, ratioData, areaData, lengthChangeData, areaChangeData, ratioChangeData, areaAverageData, ratioAverageData, startfall, endfall, videoName):
